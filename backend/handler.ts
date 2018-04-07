@@ -14,6 +14,24 @@ const trackToField = (track: Track) => ({
   }))
 });
 
+export async function goToNextSong(event, context, callback) {
+  const token = event.hostToken;
+
+  try {
+    const { Item: party } = await db.getParty(event.code);
+
+    const recommendations = await getRecommendations(token, party.genres, 1);
+
+    const track = trackToField(recommendations.tracks[0]);
+
+    await db.updateParty(event.code, "activeTrack", track);
+
+    return callback(null, party);
+  } catch (e) {
+    return callback(e);
+  }
+}
+
 export async function createParty(event, context, callback) {
   const token = event.input.hostToken;
 
