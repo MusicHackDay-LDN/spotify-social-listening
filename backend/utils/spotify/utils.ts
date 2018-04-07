@@ -13,7 +13,11 @@ export const fetchWithToken = (
     }
   }).then(x => {
     if (x.status !== 200) {
-      throw new Error(`${x.status}`);
+      return x.json().then(data => {
+        throw new Error(
+          `${x.status}\n${url}\n${JSON.stringify(data, null, 4)}`
+        );
+      });
     }
 
     return x.json();
