@@ -1,11 +1,19 @@
-import { getUserProfile } from "./utils/spotify";
+import { getUserProfile, getGenreSeeds } from "./utils/spotify";
 
 import { shortid } from "./utils/shortid";
+import { shuffle } from "./utils/shuffle";
 import * as db from "./utils/db";
 
 export async function createParty(event, context, callback) {
   try {
     const userProfile = await getUserProfile(event.input.hostToken);
+
+    // TODO: refresh token
+    // event.input.hostRefreshToken
+
+    const { genres } = await getGenreSeeds(event.input.hostToken);
+
+    const partyGenres = shuffle(genres).slice(0, 5);
 
     // TODO: make sure that this id is not duplicated
 
@@ -15,6 +23,7 @@ export async function createParty(event, context, callback) {
       activeTrack: {},
       currentAverageAttributes: {},
       history: [],
+      genres: partyGenres,
       host: {
         id: userProfile.id,
         name: userProfile.display_name || userProfile.id,

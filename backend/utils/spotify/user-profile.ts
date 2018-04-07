@@ -31,10 +31,4 @@ export type ImagesEntity = {
 };
 
 export const getUserProfile = (token: string): Promise<Profile> =>
-  fetchWithToken(token, "https://api.spotify.com/v1/me").then(x => {
-    if (x.status !== 200) {
-      throw new Error(`${x.status}`);
-    }
-
-    return x.json();
-  });
+  fetchWithToken(token, "https://api.spotify.com/v1/me");
