@@ -1,0 +1,41 @@
+type Party {
+  code: Int!
+  name: String!
+  activeTrack: Track!
+  currentAverageAttributes: Attributes!
+  history: [Track!]!
+  host: User!
+  guests: [User!]!
+}
+
+type Attributes {
+  danceability: Float!
+  energy: Float!
+  loudness: Float!
+  speechiness: Float!
+  acousticness: Float!
+  instrumentalness: Float!
+  liveness: Float!
+  valence: Float!
+  tempo: Float!
+}
+
+type User {
+  id: ID!
+  name: String
+  image: String
+}
+
+type Track {
+  id: ID!
+  title: String!
+  image: String
+}
+
+type Query {
+  getParty(code: Int!): Party
+}
+
+schema {
+  query: Query
+}

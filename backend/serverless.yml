@@ -1,0 +1,14 @@
+service: spotify-social-listening
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-dynamodb-local
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1
+
+functions:
+  create-party:
+    handler: handler.createParty
