@@ -1,4 +1,4 @@
-import fetch from "node-fetch";
+import { fetchWithToken } from "./utils";
 
 export type Profile = {
   birthdate: string;
@@ -31,11 +31,7 @@ export type ImagesEntity = {
 };
 
 export const getUserProfile = (token: string): Promise<Profile> =>
-  fetch("https://api.spotify.com/v1/me", {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  }).then(x => {
+  fetchWithToken(token, "https://api.spotify.com/v1/me").then(x => {
     if (x.status !== 200) {
       throw new Error(`${x.status}`);
     }
