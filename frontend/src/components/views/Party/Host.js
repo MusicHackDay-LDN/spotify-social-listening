@@ -15,33 +15,16 @@ import {
   Artwork,
   Title,
   Controls,
-  PlayerContainer
+  PlayerContainer,
+  ArtworkContainer,
+  Upvotes,
+  Downvotes
 } from './styles'
 import gql from 'graphql-tag'
 import { graphql, Mutation } from 'react-apollo'
 import idx from 'idx'
 import { Flex } from 'grid-styled'
 import styled from 'styled-components'
-
-const ArtworkContainer = styled.div`
-  position: relative;
-`
-const Upvotes = styled.div`
-  position: absolute;
-  bottom: 5%;
-  left: 0;
-  width: 50%;
-  display: flex;
-  flex-direction: column;
-  font-size: 48px;
-  color: white;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-`
-
-const Downvotes = styled(Upvotes)`
-  right: 5%;
-  left: auto;
-`
 
 const Genres = styled.div`
   padding: 24px 48px;

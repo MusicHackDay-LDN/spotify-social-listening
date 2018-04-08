@@ -47,3 +47,23 @@ export const Progress = styled.div`
   top: 0;
   background: #ff8d6f;
 `
+
+export const ArtworkContainer = styled.div`
+  position: relative;
+`
+export const Upvotes = styled.div`
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  font-size: 48px;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+`
+
+export const Downvotes = styled(Upvotes)`
+  right: 5%;
+  left: auto;
+`

@@ -14,11 +14,25 @@ import {
   Artwork,
   Title,
   Controls,
-  PlayerContainer
+  PlayerContainer,
+  ArtworkContainer,
+  Upvotes,
+  Downvotes
 } from './styles'
 
 const Vote = styled.div`
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`
+
+const Actions = styled.div`
+  font-size: 44px;
+  display: flex;
+  justify-content: space-between;
+  width: 300px;
 `
 
 const UPVOTE = gql`
@@ -70,21 +84,13 @@ const GET_PARTY = gql`
 
 const Upvote = ({ code }) => (
   <Mutation mutation={UPVOTE} variables={{ code }}>
-    {upvote => (
-      <Vote onClick={upvote}>
-        <Icon size="lg" icon={faThumbsUp} />
-      </Vote>
-    )}
+    {upvote => <Vote onClick={upvote}>👍🏼</Vote>}
   </Mutation>
 )
 
 const Downvote = ({ code }) => (
   <Mutation mutation={DOWNVOTE} variables={{ code }}>
-    {downvote => (
-      <Vote onClick={downvote}>
-        <Icon size="lg" icon={faThumbsDown} />
-      </Vote>
-    )}
+    {downvote => <Vote onClick={downvote}>👎🏼</Vote>}
   </Mutation>
 )
 
@@ -103,15 +109,20 @@ export default props => (
 
         return (
           <React.Fragment>
-            <Artwork src={activeTrack.image} />
+            <ArtworkContainer>
+              <Artwork src={activeTrack.image} />
+              <Upvotes>😍 {data.getParty.currentUpvotes}</Upvotes>
+              <Downvotes>👺 {data.getParty.currentDownvotes}</Downvotes>
+            </ArtworkContainer>
+
             <Title>
               {activeTrack.name} by {activeTrack.artists[0].name}
             </Title>
 
-            <div>{data.getParty.currentUpvotes}</div>
-            <div>{data.getParty.currentDownvotes}</div>
-            <Upvote code={props.match.params.partyId} />
-            <Downvote code={props.match.params.partyId} />
+            <Actions>
+              <Upvote code={props.match.params.partyId} />
+              <Downvote code={props.match.params.partyId} />
+            </Actions>
           </React.Fragment>
         )
       }}
