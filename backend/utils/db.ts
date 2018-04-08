@@ -9,7 +9,11 @@ export const createParty = party => {
 
   const params = {
     TableName: TABLE_NAME,
-    Item: party
+    Item: {
+      ...party,
+      currentUpvotes: 0,
+      currentDownvotes: 0
+    }
   };
 
   return dynamodb.put(params).promise();
