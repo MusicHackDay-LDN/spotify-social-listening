@@ -64,9 +64,6 @@ export async function createParty(event, context, callback) {
   try {
     const userProfile = await getUserProfile(token);
 
-    // TODO: refresh token
-    // event.input.hostRefreshToken
-
     const { genres } = await getGenreSeeds(token);
 
     const partyGenres = shuffle(genres).slice(0, 5);
