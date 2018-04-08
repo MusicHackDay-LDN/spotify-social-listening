@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom'
 
 import HostOrJoin from './views/HostOrJoin'
 import CreateParty from './views/CreateParty'
-import PartyGuest from './views/PartyGuest'
+import PartyGuest from './views/Party/Guest'
 import PartyHost from './views/Party/Host'
 
 const ProtectedRoutes = ({}) => (

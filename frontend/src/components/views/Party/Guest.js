@@ -1,5 +1,5 @@
 import React from 'react'
-import Page from '../layout/Page'
+import Page from '../../layout/Page'
 import { Button, Input } from 'rebass'
 import gql from 'graphql-tag'
 
