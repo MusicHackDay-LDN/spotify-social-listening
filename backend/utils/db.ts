@@ -1,4 +1,5 @@
 import * as AWS from "aws-sdk";
+import { Track } from "./spotify/recommendation";
 
 const TABLE_NAME = "SSL-Parties";
 
@@ -73,3 +74,38 @@ export const upvoteCurrentPartySong = (code: number) =>
 
 export const downvoteCurrentPartySong = (code: number) =>
   upOrDownvote(code, false);
+
+export const updateActiveTrack = async (code: number, track: {}) => {
+  const dynamodb = new AWS.DynamoDB.DocumentClient({
+    apiVersion: "2012-10-08"
+  });
+
+  const { Item: party } = await getParty(code);
+
+  const history = [
+    ...party.history,
+    {
+      ...party.activeTrack,
+      upvotes: party.currentUpvotes,
+      downvotes: party.currentDownvotes
+    }
+  ];
+
+  var params = {
+    TableName: TABLE_NAME,
+    Key: { code },
+    UpdateExpression: `
+      set activeTrack = :track,
+          history = :history,
+          currentUpvotes = :zero,
+          currentDownvotes = :zero
+    `,
+    ExpressionAttributeValues: {
+      ":track": track,
+      ":history": history,
+      ":zero": 0,
+    }
+  };
+
+  return dynamodb.update(params).promise();
+};
