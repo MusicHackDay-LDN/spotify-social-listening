@@ -1,5 +1,12 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
+  text-align: center;
+  background: #ff5f6d;
+  background: -webkit-linear-gradient(to right, #ffc371, #ff5f6d);
+  background: linear-gradient(to right, #ffc371, #ff5f6d);
+}
+
+a {
+  color: #ff8d6f;
 }
