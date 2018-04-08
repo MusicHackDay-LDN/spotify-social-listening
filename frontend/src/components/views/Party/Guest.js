@@ -2,6 +2,9 @@ import React from 'react'
 import Page from '../../layout/Page'
 import { Button, Input } from 'rebass'
 import gql from 'graphql-tag'
+import Icon from '@fortawesome/react-fontawesome'
+import { faThumbsUp, faThumbsDown } from '@fortawesome/fontawesome-free-solid'
+import styled from 'styled-components'
 
 import { Query, Mutation } from 'react-apollo'
 
@@ -13,6 +16,10 @@ import {
   Controls,
   PlayerContainer
 } from './styles'
+
+const Vote = styled.div`
+  cursor: pointer;
+`
 
 const UPVOTE = gql`
   mutation Upvote($code: Int!) {
@@ -63,13 +70,21 @@ const GET_PARTY = gql`
 
 const Upvote = ({ code }) => (
   <Mutation mutation={UPVOTE} variables={{ code }}>
-    {upvote => <div onClick={upvote}>upvote!</div>}
+    {upvote => (
+      <Vote onClick={upvote}>
+        <Icon size="lg" icon={faThumbsUp} />
+      </Vote>
+    )}
   </Mutation>
 )
 
 const Downvote = ({ code }) => (
   <Mutation mutation={DOWNVOTE} variables={{ code }}>
-    {downvote => <div onClick={downvote}>downvote!</div>}
+    {downvote => (
+      <Vote onClick={downvote}>
+        <Icon size="lg" icon={faThumbsDown} />
+      </Vote>
+    )}
   </Mutation>
 )
 
