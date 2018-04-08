@@ -17,12 +17,53 @@ import {
   Controls,
   PlayerContainer
 } from './styles'
+import gql from 'graphql-tag'
+import { graphql, Mutation } from 'react-apollo'
+import idx from 'idx'
+
+const query = gql`
+  query getParty($code: Int!) {
+    getParty(code: $code) {
+      code
+      activeTrack {
+        id
+      }
+    }
+  }
+`
+
+const gotoNextMutation = gql`
+  mutation goToNext($token: String!, $code: Int!) {
+    goToNextSong(hostToken: $token, code: $code) {
+      code
+      activeTrack {
+        id
+      }
+    }
+  }
+`
+
+const withQuery = graphql(query, {
+  options: ({ match }) => ({
+    variables: { code: +match.params.partyCode }
+  })
+})
+
+const withGoToNextSong = graphql()
 
 class Party extends Component {
   state = {}
   componentDidMount() {
     if (checkToken()) {
-      this.setupConnect(this.props.match.params.partyId)
+      this.setupConnect()
+    }
+  }
+  componentWillReceiveProps(nextProps) {
+    const currentTrackId = idx(this.props, _ => _.data.getParty.activeTrack.id)
+    const nextTrackId = idx(nextProps, _ => _.data.getParty.activeTrack.id)
+
+    if (nextTrackId && nextTrackId !== currentTrackId) {
+      this.emit('play', { id: nextTrackId })
     }
   }
   setProgress = (progress, timestamp) => {
@@ -119,10 +160,6 @@ class Party extends Component {
             </Title>
             <Controls>
               <Icon
-                onClick={() => this.emit('previous_track')}
-                icon={faStepBackward}
-              />
-              <Icon
                 onClick={() => this.emit(isPlaying ? 'pause' : 'play')}
                 size="lg"
                 icon={isPlaying ? faPause : faPlay}
@@ -151,4 +188,4 @@ class Party extends Component {
   }
 }
 
-export default Party
+export default withQuery(Party)

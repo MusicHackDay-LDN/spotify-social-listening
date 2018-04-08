@@ -8,7 +8,7 @@ import PartyHost from './views/Party/Host'
 
 const ProtectedRoutes = ({}) => (
   <Switch>
-    <Route exact path="/party/host/:partyId" component={PartyHost} />
+    <Route exact path="/party/host/:partyCode" component={PartyHost} />
     <Route exact path="/party/:partyId" component={PartyGuest} />
     <Route exact path="/create" component={CreateParty} />
     <Route exact path="*" component={HostOrJoin} />
