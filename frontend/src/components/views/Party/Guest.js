@@ -5,11 +5,24 @@ import gql from 'graphql-tag'
 
 import { Query, Mutation } from 'react-apollo'
 
+import {
+  Progress,
+  ProgressBar,
+  Artwork,
+  Title,
+  Controls,
+  PlayerContainer
+} from './styles'
+
 const UPVOTE = gql`
   mutation Upvote($code: Int!) {
     upvoteCurrentSong(code: $code) {
       activeTrack {
+        image
         name
+        artists {
+          name
+        }
       }
       currentUpvotes
       currentDownvotes
@@ -20,7 +33,11 @@ const DOWNVOTE = gql`
   mutation DownVote($code: Int!) {
     downvoteCurrentSong(code: $code) {
       activeTrack {
+        image
         name
+        artists {
+          name
+        }
       }
       currentUpvotes
       currentDownvotes
@@ -32,7 +49,11 @@ const GET_PARTY = gql`
   query Party($code: Int!) {
     getParty(code: $code) {
       activeTrack {
+        image
         name
+        artists {
+          name
+        }
       }
       currentUpvotes
       currentDownvotes
@@ -63,9 +84,15 @@ export default props => (
         if (loading) return 'Loading...'
         if (error) return `Error! ${error.message}`
 
+        const { activeTrack } = data.getParty
+
         return (
           <React.Fragment>
-            {data.getParty.activeTrack.name}
+            <Artwork src={activeTrack.image} />
+            <Title>
+              {activeTrack.name} by {activeTrack.artists[0].name}
+            </Title>
+
             <div>{data.getParty.currentUpvotes}</div>
             <div>{data.getParty.currentDownvotes}</div>
             <Upvote code={props.match.params.partyId} />
