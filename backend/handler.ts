@@ -42,13 +42,15 @@ export async function goToNextSong(event, context, callback) {
   const token = event.hostToken;
 
   try {
-    const { Item: party } = await db.getParty(event.code);
+    let { Item: party } = await db.getParty(event.code);
 
     const recommendations = await getRecommendations(token, party.genres, 1);
 
     const track = trackToField(recommendations.tracks[0]);
 
-    await db.updateParty(event.code, "activeTrack", track);
+    await db.updateActiveTrack(event.code, track);
+
+    party = (await db.getParty(event.code)).Item;
 
     return callback(null, party);
   } catch (e) {
