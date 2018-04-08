@@ -48,3 +48,28 @@ export const updateParty = (code: number, key: string, value: any) => {
 
   return dynamodb.update(params).promise();
 };
+
+const upOrDownvote = (code: number, upvote: boolean) => {
+  const key = upvote ? "currentUpvotes" : "currentDownvotes";
+
+  const dynamodb = new AWS.DynamoDB.DocumentClient({
+    apiVersion: "2012-10-08"
+  });
+
+  var params = {
+    TableName: TABLE_NAME,
+    Key: { code },
+    UpdateExpression: `set ${key} = ${key} + :n`,
+    ExpressionAttributeValues: {
+      ":n": 1
+    }
+  };
+
+  return dynamodb.update(params).promise();
+};
+
+export const upvoteCurrentPartySong = (code: number) =>
+  upOrDownvote(code, true);
+
+export const downvoteCurrentPartySong = (code: number) =>
+  upOrDownvote(code, false);

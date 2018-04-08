@@ -25,3 +25,9 @@ functions:
 
   go-to-next-song:
     handler: handler.goToNextSong
+
+  upvote-current-song:
+    handler: handler.upvoteCurrentSong
+
+  downvote-current-song:
+    handler: handler.downvoteCurrentSong

@@ -14,6 +14,30 @@ const trackToField = (track: Track) => ({
   }))
 });
 
+export async function upvoteCurrentSong(event, context, callback) {
+  try {
+    await db.upvoteCurrentPartySong(event.code);
+
+    const { Item: party } = await db.getParty(event.code);
+
+    return callback(null, party);
+  } catch (e) {
+    return callback(e);
+  }
+}
+
+export async function downvoteCurrentSong(event, context, callback) {
+  try {
+    await db.downvoteCurrentPartySong(event.code);
+
+    const { Item: party } = await db.getParty(event.code);
+
+    return callback(null, party);
+  } catch (e) {
+    return callback(e);
+  }
+}
+
 export async function goToNextSong(event, context, callback) {
   const token = event.hostToken;
 
