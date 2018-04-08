@@ -29,7 +29,7 @@ class App extends Component {
           <Router>
             <div>
               <Heading my={4} color="white">
-                Social Jukebox
+                🕺Social Jukebox💃
               </Heading>
               <Switch>
                 <Route exact path="/callback/" component={Callback} />

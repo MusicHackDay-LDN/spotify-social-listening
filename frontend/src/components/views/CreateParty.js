@@ -18,6 +18,7 @@ const mutation = gql`
     createParty(input: { name: $name, hostToken: $token }) {
       code
       name
+      genres
       activeTrack {
         id
       }
@@ -30,7 +31,6 @@ const CreateParty = ({ partyName, updatePartyName }) => (
   <Page>
     <Mutation mutation={mutation}>
       {(mutation, result) => {
-        console.log(result)
         if (result.data) {
           return <Redirect to={`/party/host/${result.data.createParty.code}`} />
         }

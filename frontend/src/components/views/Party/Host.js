@@ -20,11 +20,46 @@ import {
 import gql from 'graphql-tag'
 import { graphql, Mutation } from 'react-apollo'
 import idx from 'idx'
+import { Flex } from 'grid-styled'
+import styled from 'styled-components'
+
+const ArtworkContainer = styled.div`
+  position: relative;
+`
+const Upvotes = styled.div`
+  position: absolute;
+  bottom: 5%;
+  left: 0;
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  font-size: 48px;
+  color: white;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+`
+
+const Downvotes = styled(Upvotes)`
+  right: 5%;
+  left: auto;
+`
+
+const Genres = styled.div`
+  padding: 24px 48px;
+  text-align: center;
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+`
 
 const query = gql`
   query getParty($code: Int!) {
     getParty(code: $code) {
       code
+      genres
+      currentUpvotes
+      currentDownvotes
       activeTrack {
         id
       }
@@ -45,11 +80,10 @@ const gotoNextMutation = gql`
 
 const withQuery = graphql(query, {
   options: ({ match }) => ({
-    variables: { code: +match.params.partyCode }
+    variables: { code: +match.params.partyCode },
+    pollInterval: 500
   })
 })
-
-const withGoToNextSong = graphql()
 
 class Party extends Component {
   state = {}
@@ -147,37 +181,76 @@ class Party extends Component {
   }
   render() {
     const { error, activeTrack, playerReady, isPlaying } = this.state
+    if (this.props.data.loading) {
+      return <Page>'Loading...'</Page>
+    }
+
     return (
       <Page>
         {playerReady ? (
-          <PlayerContainer>
-            <Artwork
-              src={activeTrack.album.images[0].url}
-              alt={`${activeTrack.name} by ${activeTrack.artists[0].name}`}
-            />
-            <Title>
-              {activeTrack.name} by {activeTrack.artists[0].name}
-            </Title>
-            <Controls>
-              <Icon
-                onClick={() => this.emit(isPlaying ? 'pause' : 'play')}
-                size="lg"
-                icon={isPlaying ? faPause : faPlay}
-              />
-              <Icon
-                onClick={() => this.emit('next_track')}
-                icon={faStepForward}
-              />
-            </Controls>
-            <ProgressBar>
-              <Progress
-                style={{ width: `${this.state.progressPercent}%` }}
-                className="Progress"
-              >
-                <span />
-              </Progress>
-            </ProgressBar>
-          </PlayerContainer>
+          <Flex>
+            <PlayerContainer>
+              <ArtworkContainer>
+                <Artwork
+                  src={activeTrack.album.images[0].url}
+                  alt={`${activeTrack.name} by ${activeTrack.artists[0].name}`}
+                />
+                {this.props.data.getParty.currentUpvotes > 0 && (
+                  <Upvotes>
+                    😍 {this.props.data.getParty.currentUpvotes}
+                  </Upvotes>
+                )}
+                {this.props.data.getParty.currentDownvotes > 0 && (
+                  <Downvotes>
+                    👺 {this.props.data.getParty.currentDownvotes}
+                  </Downvotes>
+                )}
+              </ArtworkContainer>
+              <Title>
+                {activeTrack.name} by {activeTrack.artists[0].name}
+              </Title>
+              <Controls>
+                <Icon
+                  onClick={() => this.emit(isPlaying ? 'pause' : 'play')}
+                  size="lg"
+                  icon={isPlaying ? faPause : faPlay}
+                />
+                <Mutation mutation={gotoNextMutation}>
+                  {mutation => (
+                    <Icon
+                      onClick={() =>
+                        mutation({
+                          variables: {
+                            code: this.props.match.params.partyCode,
+                            token: getToken()
+                          }
+                        })
+                      }
+                      icon={faStepForward}
+                    />
+                  )}
+                </Mutation>
+              </Controls>
+              <ProgressBar>
+                <Progress
+                  style={{ width: `${this.state.progressPercent}%` }}
+                  className="Progress"
+                >
+                  <span />
+                </Progress>
+              </ProgressBar>
+            </PlayerContainer>
+            <Genres>
+              <h3>Genres</h3>
+              {this.props.data.loading ? null : (
+                <ul>
+                  {this.props.data.getParty.genres.map(genre => (
+                    <li>{genre}</li>
+                  ))}
+                </ul>
+              )}
+            </Genres>
+          </Flex>
         ) : error ? (
           <div className="Container">{error}</div>
         ) : (
